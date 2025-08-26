@@ -43,11 +43,22 @@ function DateRangePicker(props) {
     try {
       const { startDate, endDate } = range;
       if (startDate && endDate && startDate instanceof Date && endDate instanceof Date) {
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        const startText = startDate.toLocaleDateString('en-US', options);
-        const endText = endDate.toLocaleDateString('en-US', options);
-        const text = `${startText} - ${endText}`;
-        setSelectedDateText(text);
+        if (props.persianCalendar) {
+          // Import Persian calendar utilities
+          const { gregorianToPersian, formatPersianDate } = require('../../utils/persianCalendar');
+          const persianStart = gregorianToPersian(startDate);
+          const persianEnd = gregorianToPersian(endDate);
+          const startText = formatPersianDate(persianStart, 'long');
+          const endText = formatPersianDate(persianEnd, 'long');
+          const text = `${startText} - ${endText}`;
+          setSelectedDateText(text);
+        } else {
+          const options = { year: 'numeric', month: 'short', day: 'numeric' };
+          const startText = startDate.toLocaleDateString('en-US', options);
+          const endText = endDate.toLocaleDateString('en-US', options);
+          const text = `${startText} - ${endText}`;
+          setSelectedDateText(text);
+        }
       } else {
         setSelectedDateText('');
       }
@@ -55,7 +66,7 @@ function DateRangePicker(props) {
       console.warn('Error formatting date range:', error);
       setSelectedDateText('');
     }
-  }, []);
+  }, [props.persianCalendar]);
 
   // Initialize selectedDateText once on mount
   useEffect(() => {

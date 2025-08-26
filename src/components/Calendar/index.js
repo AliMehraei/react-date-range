@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { rangeShape } from '../DayCell';
 import Month from '../Month';
 import DateInput from '../DateInput';
-import { calcFocusDate, generateStyles, getMonthDisplayRange } from '../../utils';
+import { calcFocusDate, generateStyles, getMonthDisplayRange, gregorianToPersian, formatPersianDate } from '../../utils';
 import classnames from 'classnames';
 import ReactList from 'react-list';
 import { shallowEqualObjects } from 'shallow-equal';
@@ -50,8 +50,28 @@ class Calendar extends PureComponent {
       scrollArea: this.calcScrollArea(props),
     };
   }
+  
   getMonthNames() {
+    if (this.props.persianCalendar) {
+      return [
+        'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+        'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+      ];
+    }
     return [...Array(12).keys()].map(i => this.props.locale.localize.month(i));
+  }
+
+  // Get current Persian date for display
+  getCurrentPersianDate() {
+    if (!this.props.persianCalendar) return null;
+    return gregorianToPersian(new Date());
+  }
+
+  // Format date for Persian calendar display
+  formatPersianDate(date, format = 'long') {
+    if (!this.props.persianCalendar || !date) return null;
+    const persianDate = gregorianToPersian(date);
+    return formatPersianDate(persianDate, format);
   }
 
   calcScrollArea(props) {
@@ -450,6 +470,7 @@ class Calendar extends PureComponent {
       navigatorRenderer,
       className,
       preview,
+      persianCalendar,
     } = this.props;
     const { scrollArea, focusedDate } = this.state;
     const isVertical = direction === 'vertical';
@@ -467,6 +488,22 @@ class Calendar extends PureComponent {
           this.setState({ drag: { status: false, range: {} } });
         }}>
         {monthAndYearRenderer(focusedDate, this.changeShownDate, this.props)}
+        
+        {/* Persian Calendar Display */}
+        {persianCalendar && (
+          <div style={{
+            textAlign: 'center',
+            padding: '10px',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '8px',
+            marginBottom: '15px',
+            fontFamily: 'Tahoma, Arial, sans-serif',
+            direction: 'rtl'
+          }}>
+            <strong>تاریخ امروز:</strong> {this.formatPersianDate(new Date(), 'long')}
+          </div>
+        )}
+        
         {scroll.enabled ? (
           <div>
             {isVertical && this.renderWeekdays(this.dateOptions)}
@@ -631,6 +668,7 @@ Calendar.defaultProps = {
   calendarFocus: 'forwards',
   preventSnapRefocus: false,
   ariaLabels: {},
+  persianCalendar: false,
 };
 
 Calendar.propTypes = {
@@ -689,6 +727,7 @@ Calendar.propTypes = {
   ariaLabels: ariaLabelsShape,
   handleApply: PropTypes.any,
   handleCancel: PropTypes.any,
+  persianCalendar: PropTypes.bool,
 };
 
 export default Calendar;

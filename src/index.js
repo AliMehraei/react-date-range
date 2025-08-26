@@ -9,3 +9,14 @@ export { defaultInputRanges, defaultStaticRanges, createStaticRanges } from './d
 // Export Persian calendar utilities and locale
 export { persianCalendar } from './locale';
 export * from './utils/persianCalendar';
+
+// Re-export Persian calendar utilities for backward compatibility
+export { 
+  gregorianToPersian, 
+  persianToGregorian, 
+  formatPersianDate,
+  getCurrentPersianDate,
+  createPersianDate,
+  isPersianLeapYear,
+  getPersianMonthLength
+} from './utils/persianCalendar';

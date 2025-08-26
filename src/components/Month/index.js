@@ -17,8 +17,22 @@ import {
 } from 'date-fns';
 import { getMonthDisplayRange } from '../../utils';
 
-function renderWeekdays(styles, dateOptions, weekdayDisplayFormat) {
+function renderWeekdays(styles, dateOptions, weekdayDisplayFormat, persianCalendar = false) {
   const now = new Date();
+  
+  if (persianCalendar) {
+    const persianWeekdays = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+    return (
+      <div className={styles.weekDays} style={{ direction: 'rtl' }}>
+        {persianWeekdays.map((day, i) => (
+          <span className={styles.weekDay} key={i} style={{ fontFamily: 'Tahoma, Arial, sans-serif' }}>
+            {day}
+          </span>
+        ))}
+      </div>
+    );
+  }
+  
   return (
     <div className={styles.weekDays}>
       {eachDayOfInterval({
@@ -34,9 +48,17 @@ function renderWeekdays(styles, dateOptions, weekdayDisplayFormat) {
 }
 
 class Month extends PureComponent {
+  getPersianMonthName(date) {
+    const monthNames = [
+      'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+      'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+    ];
+    return monthNames[date.getMonth()];
+  }
+  
   render() {
     const now = new Date();
-    const { displayMode, focusedRange, drag, styles, disabledDates, disabledDay } = this.props;
+    const { displayMode, focusedRange, drag, styles, disabledDates, disabledDay, persianCalendar } = this.props;
     const minDate = this.props.minDate && startOfDay(this.props.minDate);
     const maxDate = this.props.maxDate && endOfDay(this.props.maxDate);
     const monthDisplay = getMonthDisplayRange(
@@ -60,12 +82,16 @@ class Month extends PureComponent {
     return (
       <div className={styles.month} style={this.props.style}>
         {this.props.showMonthName ? (
-          <div className={styles.monthName}>
-            {format(this.props.month, this.props.monthDisplayFormat, this.props.dateOptions)}
+          <div className={styles.monthName} style={persianCalendar ? { direction: 'rtl', fontFamily: 'Tahoma, Arial, sans-serif' } : {}}>
+            {persianCalendar ? (
+              this.getPersianMonthName(this.props.month)
+            ) : (
+              format(this.props.month, this.props.monthDisplayFormat, this.props.dateOptions)
+            )}
           </div>
         ) : null}
         {this.props.showWeekDays &&
-          renderWeekdays(styles, this.props.dateOptions, this.props.weekdayDisplayFormat)}
+          renderWeekdays(styles, this.props.dateOptions, this.props.weekdayDisplayFormat, persianCalendar)}
         <div className={styles.days} onMouseLeave={this.props.onMouseLeave}>
           {eachDayOfInterval({ start: monthDisplay.start, end: monthDisplay.end }).map(
             (day, index) => {

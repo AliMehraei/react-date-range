@@ -282,6 +282,7 @@ function App() {
         // Calendar Demo Component
         function CalendarDemo() {
             const [selectedDate, setSelectedDate] = React.useState(new Date());
+            const [usePersianCalendar, setUsePersianCalendar] = React.useState(false);
             
             if (!Calendar) {
                 return <div className="error">Calendar component not loaded. Please check your internet connection.</div>;
@@ -289,12 +290,36 @@ function App() {
 
             return (
                 <div>
+                    <div style={{marginBottom: '15px', textAlign: 'center'}}>
+                        <label style={{marginRight: '10px'}}>
+                            <input 
+                                type="checkbox" 
+                                checked={usePersianCalendar}
+                                onChange={(e) => setUsePersianCalendar(e.target.checked)}
+                            />
+                            تقویم فارسی (Persian Calendar)
+                        </label>
+                    </div>
+                    
                     <Calendar
                         date={selectedDate}
                         onChange={setSelectedDate}
+                        persianCalendar={usePersianCalendar}
                     />
                     <p style={{marginTop: '10px', fontSize: '14px', color: '#666'}}>
-                        Selected: {selectedDate.toLocaleDateString()}
+                        Selected: {usePersianCalendar ? 
+                            (() => {
+                                try {
+                                    const { gregorianToPersian, formatPersianDate } = window.AustroByteDatePicker || {};
+                                    if (gregorianToPersian && formatPersianDate) {
+                                        const persianDate = gregorianToPersian(selectedDate);
+                                        return formatPersianDate(persianDate, 'long');
+                                    }
+                                } catch (e) {}
+                                return selectedDate.toLocaleDateString('fa-IR');
+                            })() : 
+                            selectedDate.toLocaleDateString()
+                        }
                     </p>
                 </div>
             );
@@ -306,6 +331,7 @@ function App() {
                 startDate: new Date(),
                 endDate: new Date(),
             });
+            const [usePersianCalendar, setUsePersianCalendar] = React.useState(false);
             
             if (!DateRangePicker) {
                 return <div className="error">DateRangePicker component not loaded. Please check your internet connection.</div>;
@@ -313,12 +339,37 @@ function App() {
 
             return (
                 <div>
+                    <div style={{marginBottom: '15px', textAlign: 'center'}}>
+                        <label style={{marginRight: '10px'}}>
+                            <input 
+                                type="checkbox" 
+                                checked={usePersianCalendar}
+                                onChange={(e) => setUsePersianCalendar(e.target.checked)}
+                            />
+                            تقویم فارسی (Persian Calendar)
+                        </label>
+                    </div>
+                    
                     <DateRangePicker
                         ranges={[dateRange]}
                         onChange={setDateRange}
+                        persianCalendar={usePersianCalendar}
                     />
                     <p style={{marginTop: '10px', fontSize: '14px', color: '#666'}}>
-                        Range: {dateRange.startDate.toLocaleDateString()} - {dateRange.endDate.toLocaleDateString()}
+                        Range: {usePersianCalendar ? 
+                            (() => {
+                                try {
+                                    const { gregorianToPersian, formatPersianDate } = window.AustroByteDatePicker || {};
+                                    if (gregorianToPersian && formatPersianDate) {
+                                        const persianStart = gregorianToPersian(dateRange.startDate);
+                                        const persianEnd = gregorianToPersian(dateRange.endDate);
+                                        return `${formatPersianDate(persianStart, 'long')} - ${formatPersianDate(persianEnd, 'long')}`;
+                                    }
+                                } catch (e) {}
+                                return `${dateRange.startDate.toLocaleDateString('fa-IR')} - ${dateRange.endDate.toLocaleDateString('fa-IR')}`;
+                            })() : 
+                            `${dateRange.startDate.toLocaleDateString()} - ${dateRange.endDate.toLocaleDateString()}`
+                        }
                     </p>
                 </div>
             );
@@ -327,6 +378,7 @@ function App() {
         // DateTime Demo Component
         function DateTimeDemo() {
             const [selectedDateTime, setSelectedDateTime] = React.useState(new Date());
+            const [usePersianCalendar, setUsePersianCalendar] = React.useState(false);
             
             if (!DateTimePicker) {
                 return <div className="error">DateTimePicker component not loaded. Please check your internet connection.</div>;
@@ -334,12 +386,41 @@ function App() {
 
             return (
                 <div>
+                    <div style={{marginBottom: '15px', textAlign: 'center'}}>
+                        <label style={{marginRight: '10px'}}>
+                            <input 
+                                type="checkbox" 
+                                checked={usePersianCalendar}
+                                onChange={(e) => setUsePersianCalendar(e.target.checked)}
+                            />
+                            تقویم فارسی (Persian Calendar)
+                        </label>
+                    </div>
+                    
                     <DateTimePicker
                         date={selectedDateTime}
                         onChange={setSelectedDateTime}
+                        persianCalendar={usePersianCalendar}
                     />
                     <p style={{marginTop: '10px', fontSize: '14px', color: '#666'}}>
-                        Selected: {selectedDateTime.toLocaleString()}
+                        Selected: {usePersianCalendar ? 
+                            (() => {
+                                try {
+                                    const { gregorianToPersian, formatPersianDate } = window.AustroByteDatePicker || {};
+                                    if (gregorianToPersian && formatPersianDate) {
+                                        const persianDate = gregorianToPersian(selectedDateTime);
+                                        let text = formatPersianDate(persianDate, 'long');
+                                        const hours = selectedDateTime.getHours().toString().padStart(2, '0');
+                                        const minutes = selectedDateTime.getMinutes().toString().padStart(2, '0');
+                                        const timeString = `${hours}:${minutes} ${selectedDateTime.getHours() >= 12 ? 'بعدازظهر' : 'قبل‌ازظهر'}`;
+                                        text += ` - ${timeString}`;
+                                        return text;
+                                    }
+                                } catch (e) {}
+                                return selectedDateTime.toLocaleString('fa-IR');
+                            })() : 
+                            selectedDateTime.toLocaleString()
+                        }
                     </p>
                 </div>
             );
@@ -349,6 +430,7 @@ function App() {
         function CustomInputDemo() {
             const [isOpen, setIsOpen] = React.useState(false);
             const [selectedDate, setSelectedDate] = React.useState(new Date());
+            const [usePersianCalendar, setUsePersianCalendar] = React.useState(false);
             
             if (!Calendar) {
                 return <div className="error">Calendar component not loaded. Please check your internet connection.</div>;
@@ -356,6 +438,17 @@ function App() {
 
             return (
                 <div>
+                    <div style={{marginBottom: '15px', textAlign: 'center'}}>
+                        <label style={{marginRight: '10px'}}>
+                            <input 
+                                type="checkbox" 
+                                checked={usePersianCalendar}
+                                onChange={(e) => setUsePersianCalendar(e.target.checked)}
+                            />
+                            تقویم فارسی (Persian Calendar)
+                        </label>
+                    </div>
+                    
                     <div 
                         style={{
                             padding: '12px 16px',
@@ -373,7 +466,19 @@ function App() {
                         }}
                         onClick={() => setIsOpen(!isOpen)}
                     >
-                        <span>📅 {selectedDate.toLocaleDateString()}</span>
+                        <span>📅 {usePersianCalendar ? 
+                            (() => {
+                                try {
+                                    const { gregorianToPersian, formatPersianDate } = window.AustroByteDatePicker || {};
+                                    if (gregorianToPersian && formatPersianDate) {
+                                        const persianDate = gregorianToPersian(selectedDate);
+                                        return formatPersianDate(persianDate, 'long');
+                                    }
+                                } catch (e) {}
+                                return selectedDate.toLocaleDateString('fa-IR');
+                            })() : 
+                            selectedDate.toLocaleDateString()
+                        }</span>
                         <span>🗓️</span>
                     </div>
                     
@@ -384,6 +489,7 @@ function App() {
                                 setSelectedDate(date);
                                 setIsOpen(false);
                             }}
+                            persianCalendar={usePersianCalendar}
                         />
                     )}
                 </div>

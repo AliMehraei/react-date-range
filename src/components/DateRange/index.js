@@ -136,6 +136,7 @@ class DateRange extends Component {
         }}
         {...this.props}
         displayMode="dateRange"
+        persianCalendar={this.props.persianCalendar}
         className={classnames(this.styles.dateRangeWrapper, this.props.className)}
         onChange={this.setSelection}
         updateRange={val => this.setSelection(val, false)}

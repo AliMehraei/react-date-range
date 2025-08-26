@@ -42,27 +42,45 @@ function DateTimePicker(props) {
     date => {
       try {
         if (date instanceof Date) {
-          if (props.showTime !== false) {
-            // Show date and time
-            const options = {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: props.hour12 !== false,
-            };
-            const text = date.toLocaleString('en-US', options);
+          if (props.persianCalendar) {
+            // Import Persian calendar utilities
+            const { gregorianToPersian, formatPersianDate } = require('../../utils/persianCalendar');
+            const persianDate = gregorianToPersian(date);
+            let text = formatPersianDate(persianDate, 'long');
+            
+            if (props.showTime !== false) {
+              // Add time to Persian date
+              const hours = date.getHours().toString().padStart(2, '0');
+              const minutes = date.getMinutes().toString().padStart(2, '0');
+              const timeString = props.hour12 !== false 
+                ? `${hours}:${minutes} ${date.getHours() >= 12 ? 'بعدازظهر' : 'قبل‌ازظهر'}`
+                : `${hours}:${minutes}`;
+              text += ` - ${timeString}`;
+            }
             setSelectedDateTimeText(text);
           } else {
-            // Show only date
-            const options = {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-            };
-            const text = date.toLocaleDateString('en-US', options);
-            setSelectedDateTimeText(text);
+            if (props.showTime !== false) {
+              // Show date and time
+              const options = {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: props.hour12 !== false,
+              };
+              const text = date.toLocaleString('en-US', options);
+              setSelectedDateTimeText(text);
+            } else {
+              // Show only date
+              const options = {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              };
+              const text = date.toLocaleDateString('en-US', options);
+              setSelectedDateTimeText(text);
+            }
           }
         } else {
           setSelectedDateTimeText('');
@@ -72,7 +90,7 @@ function DateTimePicker(props) {
         setSelectedDateTimeText('');
       }
     },
-    [props.hour12, props.showTime]
+    [props.hour12, props.showTime, props.persianCalendar]
   );
 
   // Initialize selectedDateTimeText once on mount
@@ -345,6 +363,7 @@ function DateTimePicker(props) {
               onChange={handleDateChange}
               displayMode="date"
               showDateDisplay={false}
+              persianCalendar={props.persianCalendar}
             />
           </div>
 
@@ -502,6 +521,7 @@ DateTimePicker.defaultProps = {
   hour12: true,
   showTime: true,
   customInput: null,
+  persianCalendar: false,
 };
 
 DateTimePicker.propTypes = {
@@ -514,6 +534,7 @@ DateTimePicker.propTypes = {
   date: PropTypes.object,
   onChange: PropTypes.func,
   customInput: PropTypes.element,
+  persianCalendar: PropTypes.bool,
 };
 
 export default DateTimePicker;
