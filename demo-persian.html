@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقویم فارسی - AustroByte Date Picker</title>
+    
+    <!-- React CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- date-fns for date manipulation -->
+    <script src="https://unpkg.com/date-fns@3.6.0/index.js"></script>
+    
+    <!-- Component styles -->
+    <link rel="stylesheet" href="dist/styles.css">
+    <link rel="stylesheet" href="dist/theme/default.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tahoma', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3d91ff 0%, #2c5aa0 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .demo-section {
+            margin-bottom: 40px;
+        }
+
+        .demo-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .demo-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .demo-card:hover {
+            border-color: #3d91ff;
+            box-shadow: 0 10px 25px rgba(61, 145, 255, 0.15);
+        }
+
+        .demo-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .demo-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+            color: #555;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #dc3545;
+            font-size: 1.1rem;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+        }
+
+        .persian-info {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 2px solid #ffb347;
+        }
+
+        .persian-info h2 {
+            color: #d2691e;
+            margin-bottom: 15px;
+        }
+
+        .persian-info p {
+            color: #8b4513;
+            line-height: 1.6;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .code-example h4 {
+            color: #f7fafc;
+            margin-bottom: 15px;
+        }
+
+        .code-example pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 تقویم فارسی</h1>
+            <p>تقویم شمسی با پشتیبانی کامل از تاریخ‌های فارسی</p>
+        </div>
+
+        <div class="content">
+            <div class="persian-info">
+                <h2>🌟 ویژگی‌های تقویم فارسی</h2>
+                <p>
+                    این کامپوننت تقویم با پشتیبانی کامل از تقویم شمسی (Persian Calendar) طراحی شده است.
+                    شما می‌توانید تاریخ‌ها را به صورت فارسی مانند "۱ اسفند ۱۴۰۴" مشاهده کنید.
+                </p>
+            </div>
+
+            <div class="demo-section">
+                <h2 class="demo-title">🚀 نمونه استفاده</h2>
+                
+                <div class="code-example">
+                    <h4>نصب و استفاده:</h4>
+                    <pre>
+import { PersianDateRangePicker } from 'austro-byte-datepicker';
+
+&lt;PersianDateRangePicker
+  ranges={ranges}
+  onChange={handleChange}
+  showPersianDates={true}
+  persianDateFormat="long"
+/&gt;
+                    </pre>
+                </div>
+
+                <div id="persian-demo"></div>
+            </div>
+
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>📊 ویژگی‌های اصلی</h3>
+                    <ul class="feature-list">
+                        <li>پشتیبانی کامل از تقویم شمسی</li>
+                        <li>نمایش تاریخ‌ها به فارسی</li>
+                        <li>تبدیل خودکار تاریخ میلادی به شمسی</li>
+                        <li>پشتیبانی از سال‌های کبیسه</li>
+                        <li>رابط کاربری راست‌چین (RTL)</li>
+                        <li>فونت‌های فارسی بهینه</li>
+                    </ul>
+                </div>
+
+                <div class="demo-card">
+                    <h3>🔧 قابلیت‌های فنی</h3>
+                    <ul class="feature-list">
+                        <li>محاسبات دقیق تقویم شمسی</li>
+                        <li>تبدیل تاریخ با الگوریتم‌های استاندارد</li>
+                        <li>پشتیبانی از date-fns</li>
+                        <li>کامپوننت React کاملاً سازگار</li>
+                        <li>TypeScript support</li>
+                        <li>Customizable themes</li>
+                    </ul>
+                </div>
+
+                <div class="demo-card">
+                    <h3>📱 کاربردها</h3>
+                    <ul class="feature-list">
+                        <li>سیستم‌های مدیریتی فارسی</li>
+                        <li>اپلیکیشن‌های مالی و حسابداری</li>
+                        <li>سیستم‌های رزرو و نوبت‌دهی</li>
+                        <li>تقویم‌های شخصی و کاری</li>
+                        <li>فرم‌های ورود اطلاعات</li>
+                        <li>داشبوردهای مدیریتی</li>
+                    </ul>
+                </div>
+
+                <div class="demo-card">
+                    <h3>🎨 سفارشی‌سازی</h3>
+                    <ul class="feature-list">
+                        <li>انتخاب فرمت تاریخ فارسی</li>
+                        <li>تنظیم جهت نمایش (RTL/LTR)</li>
+                        <li>تغییر رنگ‌ها و تم‌ها</li>
+                        <li>تنظیم زبان و منطقه</li>
+                        <li>اضافه کردن کلاس‌های CSS</li>
+                        <li>تنظیم رفتار کامپوننت</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function PersianCalendarDemo() {
+            const [ranges, setRanges] = useState([
+                {
+                    startDate: new Date(),
+                    endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                    key: 'selection',
+                    label: 'هفته آینده'
+                }
+            ]);
+
+            const [focusedRange, setFocusedRange] = useState([0, 0]);
+
+            const handleRangeChange = (newRanges) => {
+                setRanges(newRanges);
+                console.log('New ranges:', newRanges);
+            };
+
+            const handleRangeFocusChange = (focusedRange) => {
+                setFocusedRange(focusedRange);
+            };
+
+            return (
+                <div className="persian-calendar-demo">
+                    <div className="demo-card" style={{ marginBottom: '20px' }}>
+                        <h3>📅 انتخاب بازه زمانی</h3>
+                        <p>تاریخ‌های انتخاب شده به صورت فارسی نمایش داده می‌شوند:</p>
+                        
+                        <div id="persian-date-picker"></div>
+                    </div>
+
+                    <div className="demo-card">
+                        <h3>📊 اطلاعات بازه انتخاب شده</h3>
+                        <div style={{ 
+                            padding: '15px', 
+                            backgroundColor: 'white', 
+                            borderRadius: '8px',
+                            border: '1px solid #dee2e6'
+                        }}>
+                            <p><strong>تاریخ شروع:</strong> {ranges[0]?.startDate?.toLocaleDateString('fa-IR')}</p>
+                            <p><strong>تاریخ پایان:</strong> {ranges[0]?.endDate?.toLocaleDateString('fa-IR')}</p>
+                            <p><strong>تعداد روزها:</strong> {
+                                ranges[0]?.startDate && ranges[0]?.endDate 
+                                    ? Math.ceil((ranges[0].endDate - ranges[0].startDate) / (1000 * 60 * 60 * 24))
+                                    : 0
+                            } روز</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render the demo
+        ReactDOM.render(<PersianCalendarDemo />, document.getElementById('persian-demo'));
+    </script>
+
+    <script>
+        // Load the component dynamically
+        async function loadPersianDatePicker() {
+            try {
+                // Try to load from local dist first
+                const script = document.createElement('script');
+                script.src = 'dist/index.umd.js';
+                script.onload = function() {
+                    if (window.AustroByteDatePicker && window.AustroByteDatePicker.PersianDateRangePicker) {
+                        renderPersianDatePicker();
+                    } else {
+                        // Fallback to CDN
+                        loadFromCDN();
+                    }
+                };
+                script.onerror = function() {
+                    loadFromCDN();
+                };
+                document.head.appendChild(script);
+            } catch (error) {
+                console.error('Error loading component:', error);
+                loadFromCDN();
+            }
+        }
+
+        function loadFromCDN() {
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/austro-byte-datepicker@latest/dist/index.umd.js';
+            script.onload = function() {
+                if (window.AustroByteDatePicker && window.AustroByteDatePicker.PersianDateRangePicker) {
+                    renderPersianDatePicker();
+                } else {
+                    showError('PersianDateRangePicker component not available');
+                }
+            };
+            script.onerror = function() {
+                showError('Failed to load component from CDN');
+            };
+            document.head.appendChild(script);
+        }
+
+        function renderPersianDatePicker() {
+            const { PersianDateRangePicker } = window.AustroByteDatePicker;
+            
+            if (!PersianDateRangePicker) {
+                showError('PersianDateRangePicker component not loaded');
+                return;
+            }
+
+            const ranges = [
+                {
+                    startDate: new Date(),
+                    endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                    key: 'selection',
+                    label: 'هفته آینده'
+                }
+            ];
+
+            const container = document.getElementById('persian-date-picker');
+            
+            ReactDOM.render(
+                React.createElement(PersianDateRangePicker, {
+                    ranges: ranges,
+                    onChange: (newRanges) => {
+                        console.log('Persian date ranges changed:', newRanges);
+                    },
+                    onRangeFocusChange: (focusedRange) => {
+                        console.log('Focus changed:', focusedRange);
+                    },
+                    showPersianDates: true,
+                    persianDateFormat: 'long'
+                }),
+                container
+            );
+        }
+
+        function showError(message) {
+            const container = document.getElementById('persian-date-picker');
+            container.innerHTML = `<div class="error">${message}</div>`;
+        }
+
+        // Load the component when page is ready
+        document.addEventListener('DOMContentLoaded', loadPersianDatePicker);
+    </script>
+</body>
+</html>

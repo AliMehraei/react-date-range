@@ -45,7 +45,7 @@ import 'austro-byte-datepicker/dist/theme/default.css';
 
 ```jsx
 import React, { useState } from 'react';
-import { Calendar, DateRangePicker, DateTimePicker } from 'austro-byte-datepicker';
+import { Calendar, DateRangePicker, DateTimePicker, PersianDateRangePicker } from 'austro-byte-datepicker';
 
 function App() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -74,9 +74,85 @@ function App() {
         date={selectedDateTime}
         onChange={setSelectedDateTime}
       />
+
+      {/* Persian Calendar Date Range Picker */}
+      <PersianDateRangePicker
+        ranges={[dateRange]}
+        onChange={setDateRange}
+        showPersianDates={true}
+        persianDateFormat="long"
+      />
     </div>
   );
 }
+```
+
+## 🌍 Persian Calendar Support
+
+The library now includes full support for Persian (Shamsi) calendar with the `PersianDateRangePicker` component. This component provides:
+
+- **Persian Date Display**: Shows dates in Persian format (e.g., "۱ اسفند ۱۴۰۴")
+- **Automatic Conversion**: Converts between Gregorian and Persian calendars
+- **RTL Support**: Right-to-left text direction for Persian language
+- **Persian Locale**: Uses Persian calendar locale from date-fns
+- **Customizable Format**: Choose between short, long, and numeric date formats
+
+### Persian Calendar Usage
+
+```jsx
+import React, { useState } from 'react';
+import { PersianDateRangePicker } from 'austro-byte-datepicker';
+
+function PersianCalendarExample() {
+  const [ranges, setRanges] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      key: 'selection',
+      label: 'هفته آینده'
+    }
+  ]);
+
+  return (
+    <PersianDateRangePicker
+      ranges={ranges}
+      onChange={setRanges}
+      showPersianDates={true}
+      persianDateFormat="long"
+      locale="fa-IR"
+    />
+  );
+}
+```
+
+### Persian Calendar Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `showPersianDates` | boolean | `true` | Whether to show Persian date displays |
+| `persianDateFormat` | string | `'long'` | Persian date format: 'short', 'long', or 'numeric' |
+| `locale` | object | Persian locale | Locale configuration (defaults to Persian) |
+
+### Persian Calendar Utilities
+
+The library also exports Persian calendar utility functions:
+
+```jsx
+import { 
+  gregorianToPersian, 
+  persianToGregorian, 
+  formatPersianDate,
+  getCurrentPersianDate 
+} from 'austro-byte-datepicker';
+
+// Convert Gregorian date to Persian
+const persianDate = gregorianToPersian(new Date());
+
+// Format Persian date
+const formattedDate = formatPersianDate(persianDate, 'long'); // "۱ اسفند ۱۴۰۴"
+
+// Get current Persian date
+const today = getCurrentPersianDate();
 ```
 
 ## 🎨 Custom Input Support

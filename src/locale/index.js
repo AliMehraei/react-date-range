@@ -60,3 +60,6 @@ export { default as uk } from 'date-fns/locale/uk';
 export { default as vi } from 'date-fns/locale/vi';
 export { default as zhCN } from 'date-fns/locale/zh-CN';
 export { default as zhTW } from 'date-fns/locale/zh-TW';
+
+// Persian calendar configuration
+export { default as persianCalendar } from './fa-IR';

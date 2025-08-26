@@ -9,6 +9,9 @@ import {
   addDays,
 } from 'date-fns';
 
+// Export Persian calendar utilities
+export * from './utils/persianCalendar';
+
 export function calcFocusDate(currentFocusedDate, props) {
   const { shownDate, date, months, ranges, focusedRange, displayMode } = props;
   // find primary date according the props
